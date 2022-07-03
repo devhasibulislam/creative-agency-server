@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 
 // enable requests
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Creative agency server Connected');
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Creative agency server listening on port ${port}`);
 })
