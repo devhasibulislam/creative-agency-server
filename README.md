@@ -9,7 +9,7 @@
 * body-parser
 
 ## Owing this project
-`make sure have install VSCODE`
+`make sure, have installed VSCODE`
 ```bash
 git clone https://github.com/hasibulislam999/creative-agency-server.git
 cd creative-agency-server
