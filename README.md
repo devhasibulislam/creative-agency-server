@@ -1,4 +1,4 @@
-# Creative Agency Client-Side
+# Creative Agency Server-Side
 ## Owing this project
 `make sure have install VSCODE`
 ```bash
