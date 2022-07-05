@@ -22,12 +22,39 @@ const database = new MongoClient(uri, {
 });
 
 async function run() {
-    try{
+    try {
         await database.connect();
 
-        const collection = database.db('test').collection('devices');
+        const userCollection = database.db('creative_agency').collection('users');
         console.log('Creative agency server successfully connected!');
-    } finally{
+
+        // add user to db
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const body = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const doc = {
+                $set: body
+            }
+
+            res.send(await userCollection.updateOne(filter, doc, options));
+        })
+
+        // get user form db
+        app.get('/users', async (req, res) => {
+            res.send(await userCollection.find({}).toArray());
+        })
+
+        // get admin of a user from db
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            const role = user?.role === 'admin' && 'admin';
+
+            res.send({role: role});
+        })
+    } finally {
         // await database.close();
     }
 } run().catch(console.dir);
