@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // mongodb connectivity
-const uri = `mongodb+srv://creativeAgency:b2d5ef8d0d873c20feae72198400cc95@creative-agency.gsy16.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@creative-agency.gsy16.mongodb.net/?retryWrites=true&w=majority`;
 const database = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
