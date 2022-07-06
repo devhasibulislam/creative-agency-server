@@ -83,6 +83,13 @@ async function run() {
             };
             res.send(await userCollection.updateOne(filter, doc, options));
         })
+
+        // add service through admin
+        app.post('/service', async(req, res)=>{
+            const body = req.body;
+            const service = await adminServiceCollection.insertOne(body);
+            res.send(service);
+        })
     } finally {
         // await database.close();
     }
