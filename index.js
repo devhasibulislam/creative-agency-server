@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // mongodb connectivity
-const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@creative-agency.gsy16.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://creativeAgency:b2d5ef8d0d873c20feae72198400cc95@creative-agency.gsy16.mongodb.net/?retryWrites=true&w=majority`;
 const database = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -27,11 +27,9 @@ async function run() {
 
         // only available for admins
         const userCollection = database.db('creative_agency').collection('users');
-        const adminServiceListCollection = database.db('creative_agencies_admin').collection('serviceLists');
         const adminServiceCollection = database.db('creative_agencies_admin').collection('service');
         // only available for customers
         const customerOrderCollection = database.db('creative_agencies_customer').collection('orders');
-        const customerServiceCollection = database.db('creative_agencies_customer').collection('services');
         const customerReviewCollection = database.db('creative_agencies_customer').collection('reviews');
 
         console.log('Creative agency server successfully connected!');
