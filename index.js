@@ -2,7 +2,7 @@
 const express = require('express');
 var cors = require('cors')
 const bodyParser = require('body-parser');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require("dotenv").config();
 
 const app = express();
@@ -85,10 +85,61 @@ async function run() {
         })
 
         // add service through admin
-        app.post('/service', async(req, res)=>{
+        app.post('/service', async (req, res) => {
             const body = req.body;
             const service = await adminServiceCollection.insertOne(body);
             res.send(service);
+        })
+
+        // show services from admin to customer
+        app.get('/services', async (req, res) => {
+            res.send(await adminServiceCollection.find({}).toArray());
+        })
+
+        // add review from user
+        app.put('/review/:email', async (req, res) => {
+            const email = req.params.email;
+            const body = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const doc = {
+                $set: body
+            };
+            const review = await customerReviewCollection.updateOne(filter, doc, options);
+            res.send(review);
+        })
+
+        // get service name only to include
+        app.get('/courses', async (req, res) => {
+            const option = {
+                projection: { name: 1 }
+            };
+            res.send(await adminServiceCollection.find({}, option).toArray());
+        })
+
+        // post an order from customer
+        app.post('/order', async (req, res) => {
+            const body = req.body;
+            const course = await customerOrderCollection.insertOne(body);
+            res.send(course);
+        })
+
+        // everything about customer order
+        app.get('/orders', async (req, res) => {
+            res.send(await customerOrderCollection.find({}).toArray());
+        })
+
+        // adding state from admin to customer order
+        app.put('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const body = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const doc = {
+                $set: body
+            };
+            const order = await customerOrderCollection.updateOne(filter, doc, options);
+            res.send(order);
         })
     } finally {
         // await database.close();
