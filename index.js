@@ -25,7 +25,15 @@ async function run() {
     try {
         await database.connect();
 
+        // only available for admins
         const userCollection = database.db('creative_agency').collection('users');
+        const adminServiceListCollection = database.db('creative_agencies_admin').collection('serviceLists');
+        const adminServiceCollection = database.db('creative_agencies_admin').collection('service');
+        // only available for customers
+        const customerOrderCollection = database.db('creative_agencies_customer').collection('orders');
+        const customerServiceCollection = database.db('creative_agencies_customer').collection('services');
+        const customerReviewCollection = database.db('creative_agencies_customer').collection('reviews');
+
         console.log('Creative agency server successfully connected!');
 
         // add user to db
@@ -52,7 +60,28 @@ async function run() {
             const user = await userCollection.findOne({ email: email });
             const role = user?.role === 'admin' && 'admin';
 
-            res.send({role: role});
+            res.send({ role: role });
+        })
+
+        // get customer email addresses else admin email address
+        app.get('/emails', async (req, res) => {
+            const query = { role: { $ne: 'admin' } };
+            const option = {
+                projection: { email: 1 }
+            };
+            res.send(await userCollection.find(query, option).toArray());
+        })
+
+        // make a customer an admin
+        app.put('/email/:email', async (req, res) => {
+            const email = req.params.email;
+            const body = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const doc = {
+                $set: body
+            };
+            res.send(await userCollection.updateOne(filter, doc, options));
         })
     } finally {
         // await database.close();
@@ -62,7 +91,7 @@ async function run() {
 
 // enable requests
 app.get('/', (req, res) => {
-    res.send(`<h1>Creative agency server Connected.</h1>`);
+    res.send(`<h1 align=center>Creative agency server Connected.</h1>`);
 })
 
 app.listen(port, () => {
